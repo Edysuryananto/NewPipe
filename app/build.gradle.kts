@@ -38,6 +38,15 @@ kotlin {
 configure<ApplicationExtension> {
     compileSdk = 36
     namespace = "org.schabi.newpipe"
+// 1. TAMBAHKAN BLOK STEMPEL (SIGNING) DI SINI
+    signingConfigs {
+        register("release") {
+            storeFile = file("freyo-key.jks") 
+            storePassword = System.getenv("KEYSTORE_PASSWORD")
+            keyAlias = "freyo-alias"
+            keyPassword = System.getenv("KEY_PASSWORD")
+        }
+    }
 
     defaultConfig {
         applicationId = "org.schabi.newpipe"
@@ -75,6 +84,9 @@ configure<ApplicationExtension> {
         }
 
         release {
+// Tambahkan baris ini agar aplikasi "distempel" otomatis
+            signingConfig = signingConfigs.getByName("release")
+
             System.getProperty("packageSuffix")?.let { suffix ->
                 applicationIdSuffix = suffix
                 resValue("string", "app_name", "NewPipe $suffix")
